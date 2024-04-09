@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujo Táctil</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Evita que el desplazamiento de la página interfiera con el dibujo */
+        }
+
+        canvas {
+            display: block;
+            background-color: #f0f0f0;
+            margin: auto; /* Centra el lienzo en la página */
+            touch-action: none; /* Evita que los gestos táctiles afecten al dibujo */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        // Establecer el tamaño del lienzo para que ocupe toda la ventana
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let isDrawing = false;
+
+        // Eventos de ratón o táctiles para dibujar
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('touchstart', startDrawing);
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchmove', draw);
+
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('touchend', stopDrawing);
+
+        function startDrawing(event) {
+            isDrawing = true;
+            draw(event); // Comienza a dibujar en el punto inicial
+        }
+
+        function draw(event) {
+            if (!isDrawing) return;
+
+            const x = event.clientX || event.touches[0].clientX;
+            const y = event.clientY || event.touches[0].clientY;
+
+            context.lineWidth = 5;
+            context.lineCap = 'round';
+            context.strokeStyle = 'black';
+
+            context.lineTo(x, y);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(x, y);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            context.beginPath(); // Prepara un nuevo trazo al dejar de dibujar
+        }
+    </script>
+</body>
+</html>
